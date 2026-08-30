@@ -1,0 +1,24 @@
+name: Job Dependencies
+
+on:
+  workflow_dispatch: # Allows you to run it manually
+
+jobs:
+  build_job:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "🔨 Step 1 - Building the application..."
+      - run: sleep 3 # Pausing for 3 seconds so you can watch the progression
+
+  test_job:
+    needs: build_job # This tells GitHub to WAIT for build_job to finish successfully
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "✅ Step 2 - Running the tests..."
+      - run: sleep 3
+
+  deploy_job:
+    needs: test_job # This tells GitHub to WAIT for test_job to finish successfully
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "🚀 Step 3 - Deploying to production!"
