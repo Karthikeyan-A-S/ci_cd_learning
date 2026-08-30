@@ -1,0 +1,29 @@
+name: Docker Build Workflow
+
+on:
+  workflow_dispatch: # Allows manual trigger
+
+jobs:
+  build_and_run_container:
+    runs-on: ubuntu-latest
+    steps:
+      # We MUST checkout the code first, because Docker needs the Dockerfile and Python files to build the image!
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check Docker version
+        run: |
+          echo "Checking what version of Docker is installed on the GitHub Runner..."
+          docker --version
+          docker info
+
+      - name: Build the Docker image
+        # This tells docker to build an image named 'my-python-app' using the Dockerfile in the current directory (.)
+        run: docker build -t my-python-app:latest .
+
+      - name: View created images
+        run: docker images
+
+      - name: Run the Docker container
+        # This will start the container, which automatically runs our unit tests based on the CMD in the Dockerfile
+        run: docker run my-python-app:latest
