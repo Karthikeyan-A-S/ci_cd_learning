@@ -4,6 +4,14 @@ on:
   workflow_dispatch: # Allows you to run it manually
 
 jobs:
+  independent_check:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "🕵️ I am an independent job! I have no 'needs' keyword."
+      - run: echo "I will start immediately and run IN PARALLEL with build_job!"
+      - run: sleep 8
+      - run: echo "🕵️ Independent check finished!"
+
   build_job:
     runs-on: ubuntu-latest
     steps:
