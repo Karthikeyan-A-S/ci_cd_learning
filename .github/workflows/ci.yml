@@ -28,5 +28,4 @@ jobs:
     # Runs the tests
     - name: Run unit tests
       run: |
-        cd ci_cd_learning
         python -m unittest test_math_operations.py
