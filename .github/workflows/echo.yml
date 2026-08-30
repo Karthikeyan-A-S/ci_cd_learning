@@ -1,19 +1,25 @@
 name: Echo Only Workflow
 
-# Trigger this workflow only on pushes to the new branch
+# Trigger this workflow on pushes OR manually via workflow_dispatch
 on:
   push:
     branches: [ "feature/echo-and-bug" ]
+  workflow_dispatch:
+    inputs:
+      custom_message:
+        description: 'Type a message to echo:'
+        required: true
+        default: 'This was triggered manually!'
+        type: string
 
 jobs:
   echo_job:
-    # A runner (virtual machine) is always required by GitHub Actions to execute commands.
-    # However, since we omit the `actions/checkout` step, it will NOT download your code.
     runs-on: ubuntu-latest
 
     steps:
     - name: Run a simple echo command
-      run: echo "Hello! I am running on a runner, but I didn't checkout your repository code!"
+      # This will print the custom message if triggered manually, otherwise it falls back to a default string.
+      run: echo "${{ inputs.custom_message || 'This ran automatically via push!' }}"
 
     - name: Run a multi-line echo
       run: |
