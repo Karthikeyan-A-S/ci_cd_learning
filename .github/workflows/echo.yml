@@ -1,0 +1,21 @@
+name: Echo Only Workflow
+
+# Trigger this workflow only on pushes to the new branch
+on:
+  push:
+    branches: [ "feature/echo-and-bug" ]
+
+jobs:
+  echo_job:
+    # A runner (virtual machine) is always required by GitHub Actions to execute commands.
+    # However, since we omit the `actions/checkout` step, it will NOT download your code.
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Run a simple echo command
+      run: echo "Hello! I am running on a runner, but I didn't checkout your repository code!"
+
+    - name: Run a multi-line echo
+      run: |
+        echo "This workflow is extremely fast."
+        echo "Because there is no code to download and no tests to run."
