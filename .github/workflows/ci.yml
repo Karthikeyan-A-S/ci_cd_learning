@@ -29,3 +29,6 @@ jobs:
     - name: Run unit tests
       run: |
         python -m unittest test_math_operations.py
+    - name: done
+      run:  echo "The job is done"
+  
