@@ -1,0 +1,26 @@
+name: Deploy to Production (AWS EC2)
+
+on:
+  workflow_dispatch: # Run manually
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'index.html' # Also trigger automatically if we edit the website file!
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Securely Copy Files to EC2 Server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          # We want to grab the index.html file from GitHub
+          source: "index.html"
+          # And paste it directly into the Nginx website folder on the server
+          target: "/usr/share/nginx/html/"
