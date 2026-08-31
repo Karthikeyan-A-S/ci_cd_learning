@@ -1,0 +1,34 @@
+name: Push to GitHub Container Registry
+
+on:
+  workflow_dispatch:
+
+# We MUST give GitHub Actions permission to write to your packages
+permissions:
+  packages: write
+  contents: read
+
+jobs:
+  build_and_publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry (GHCR)
+        # GitHub provides a built-in temporary password (GITHUB_TOKEN) we can use to login!
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Convert Repository Name to Lowercase
+        # Docker requires all image names to be completely lowercase
+        run: |
+          REPO_LOWER=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          echo "REPO_LOWER=$REPO_LOWER" >> $GITHUB_ENV
+
+      - name: Build the Docker image
+        # We tag the image with the special ghcr.io URL so Docker knows where to push it
+        run: docker build -t ghcr.io/$REPO_LOWER:latest .
+
+      - name: Push to GHCR
+        # This uploads your image to the internet!
+        run: docker push ghcr.io/$REPO_LOWER:latest
